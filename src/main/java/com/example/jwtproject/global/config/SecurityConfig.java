@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(request -> request.getRequestURI().startsWith("/auth")).permitAll()
+                        .requestMatchers("/signup", "/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();
