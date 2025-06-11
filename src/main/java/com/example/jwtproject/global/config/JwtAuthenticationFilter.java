@@ -43,18 +43,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     setAuthentication(claims);
                 }
-            } catch (SecurityException | MalformedJwtException e) {
-                log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.", e);
-                httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않는 JWT 서명입니다.");
-            } catch (ExpiredJwtException e) {
-                log.error("Expired JWT token, 만료된 JWT token 입니다.", e);
-                httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "만료된 JWT 토큰입니다.");
-            } catch (UnsupportedJwtException e) {
-                log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.", e);
-                httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "지원되지 않는 JWT 토큰입니다.");
-            } catch (Exception e) {
-                log.error("Internal server error", e);
-                httpResponse.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            } catch (SecurityException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+                log.error("JWT 처리 실패", e);
+                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                httpResponse.setContentType("application/json;charset=utf-8");
+                httpResponse.getWriter().write("""
+                        {
+                          "error": {
+                            "code": "INVALID_TOKEN",
+                            "message": "유효하지 않은 인증 토큰입니다."
+                          }
+                        }
+                        """);
+                return;
             }
         }
         filterChain.doFilter(httpRequest, httpResponse);
