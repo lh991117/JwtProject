@@ -17,6 +17,7 @@ import java.security.Key;
 import java.security.Signature;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j(topic = "JwtUtil")
 @Component
@@ -37,14 +38,14 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Long userId, String username, UserRole userRole) {
+    public String createToken(Long userId, String username, List<String> roles) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(String.valueOf(userId))
                         .claim("username", username)
-                        .claim("userRole", userRole)
+                        .claim("roles", roles)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
@@ -55,7 +56,7 @@ public class JwtUtil {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
-        throw new ServerException("Not Found Token");
+        throw new ServerException("Not Found Token", "Not Found Token");
     }
 
     public Claims extractClaims(String token) {

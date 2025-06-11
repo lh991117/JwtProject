@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -19,15 +22,29 @@ public class User {
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Role> roles = new ArrayList<>();
 
     private String nickname;
 
-    public User(String username, String password, UserRole userRole, String nickname) {
+    public void addRole(UserRole role){
+        this.roles.add((new Role(role, this)));
+    }
+
+    public void changeRoles(List<UserRole> newRoles){
+        this.roles.clear();
+        for(UserRole role : newRoles){
+            this.addRole(role);
+        }
+    }
+
+    public User(String username, String password, List<UserRole> userRoles, String nickname) {
         this.username = username;
         this.password = password;
-        this.userRole = userRole;
+        this.roles = new ArrayList<>();
+        for(UserRole role : userRoles){
+            this.roles.add((new Role(role, this)));
+        }
         this.nickname = nickname;
     }
 }

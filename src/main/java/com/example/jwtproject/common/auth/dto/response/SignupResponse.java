@@ -1,17 +1,18 @@
 package com.example.jwtproject.common.auth.dto.response;
 
+import com.example.jwtproject.common.user.dto.response.RoleResponse;
+import com.example.jwtproject.common.user.entity.Role;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+import java.util.List;
+
+@Data
+@AllArgsConstructor
 public class SignupResponse {
 
-    private final String username;
-    private final String nickname;
-    private final String role;
-
-    public SignupResponse(String username, String nickname, String role) {
-        this.username = username;
-        this.nickname = nickname;
-        this.role = role;
-    }
+    private String username;
+    private String nickname;
+    private List<RoleResponse> roles;
 }

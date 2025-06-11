@@ -2,7 +2,15 @@ package com.example.jwtproject.common.exception;
 
 public class ServerException extends RuntimeException {
 
-    public ServerException(String message) {
+    private final String errorCode;
+
+    public ServerException(String errorCode, String message) {
+
         super(message);
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
     }
 }

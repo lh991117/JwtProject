@@ -2,7 +2,15 @@ package com.example.jwtproject.common.exception;
 
 public class AuthException extends RuntimeException {
 
-    public AuthException(String message) {
+    private final String errorCode;
+
+    public AuthException(String errorCode, String message) {
+
         super(message);
+        this.errorCode = errorCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
     }
 }

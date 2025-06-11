@@ -1,9 +1,10 @@
 package com.example.jwtproject.global.config;
 
-import com.sun.jdi.request.InvalidRequestStateException;
+import com.example.jwtproject.global.exception.InvalidRequestStateException;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,29 +16,40 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidRequestStateException.class)
-    public ResponseEntity<Map<String, Object>> invalidRequestStateException(InvalidRequestStateException e) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        return getErrorResponse(status, e.getMessage());
+    public ResponseEntity<Map<String, Object>> handleInvalidRequestState(InvalidRequestStateException e) {
+        return getWrappedErrorResponse(HttpStatus.BAD_REQUEST, e.getErrorCode(), e.getMessage());
     }
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<Map<String, Object>> handleAuthException(AuthException ex) {
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
-        return getErrorResponse(status, ex.getMessage());
+        return getWrappedErrorResponse(HttpStatus.UNAUTHORIZED, "AUTH_ERROR", ex.getMessage());
     }
 
     @ExceptionHandler(ServerException.class)
     public ResponseEntity<Map<String, Object>> handleServerException(ServerException ex) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return getErrorResponse(status, ex.getMessage());
+        return getWrappedErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "SERVER_ERROR", ex.getMessage());
     }
 
-    public ResponseEntity<Map<String, Object>> getErrorResponse(HttpStatus status, String message) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("status", status.name());
-        errorResponse.put("code", status.value());
-        errorResponse.put("message", message);
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDeniedException(AccessDeniedException ex) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("code", "ACCESS_DENIED");
+        error.put("message", "관리자 권한이 필요한 요청입니다. 접근 권한이 없습니다.");
 
-        return new ResponseEntity<>(errorResponse, status);
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", error);
+
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
+
+    public ResponseEntity<Map<String, Object>> getWrappedErrorResponse(HttpStatus status, String code, String message) {
+        Map<String, String> errorBody = new HashMap<>();
+        errorBody.put("code", code);
+        errorBody.put("message", message);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", errorBody);
+
+        return new ResponseEntity<>(response, status);
     }
 }

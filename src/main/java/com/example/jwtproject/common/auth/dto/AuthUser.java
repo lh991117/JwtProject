@@ -15,9 +15,11 @@ public class AuthUser {
     private final String username;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public AuthUser(Long id, String username, UserRole userRole) {
+    public AuthUser(Long id, String username, List<UserRole> userRoles) {
         this.id = id;
         this.username = username;
-        this.authorities= List.of(new SimpleGrantedAuthority(userRole.name()));
+        this.authorities= userRoles.stream()
+                .map(userRole -> new SimpleGrantedAuthority("ROLE_" + userRole.name()))
+                .toList();
     }
 }
