@@ -6,6 +6,15 @@ Spring Boot 기반으로 제작한 JWT 인증 시스템입니다. 회원가입, 
 
 ---
 
+## 🧰 기술 스택
+
+- Spring Boot 3.5.0
+- Spring Security
+- JWT
+- JaCoCo
+
+---
+
 ## 📂 주요 기능
 
 - 회원가입 (`/signup`)
@@ -115,3 +124,6 @@ Spring Boot 기반으로 제작한 JWT 인증 시스템입니다. 회원가입, 
         "message": "관리자 권한이 필요한 요청입니다. 접근 권한이 없습니다."
     }
   }
+
+---
+
