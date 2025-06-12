@@ -10,8 +10,7 @@ Spring Boot 기반으로 제작한 JWT 인증 시스템입니다. 회원가입, 
 
 - 회원가입 (`/signup`)
 - 로그인 (`/login`)
-- 관리자 권한 부여 (`/admin/grant`) - 테스트 용도
-- 사용자 권한 조회 (`/admin/users/{username}`)
+- 관리자 권한 부여 (`/admin/users/{userId}/roles`)
 
 ---
 
