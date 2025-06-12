@@ -56,10 +56,10 @@ public class AuthService {
     public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow(
-                () -> new InvalidRequestStateException("INVALID_CREDENTIALS", "아이디 또는 비밀번호가 올바르지 않습니다."));
+                () -> new AuthException("INVALID_CREDENTIALS", "아이디 또는 비밀번호가 올바르지 않습니다."));
 
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new InvalidRequestStateException("INVALID_CREDENTIALS", "아이디 또는 비밀번호가 올바르지 않습니다.");
+            throw new AuthException("INVALID_CREDENTIALS", "아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
         List<String> roleNames = user.getRoles().stream()

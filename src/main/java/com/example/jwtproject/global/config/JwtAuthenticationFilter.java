@@ -1,6 +1,7 @@
 package com.example.jwtproject.global.config;
 
 import com.example.jwtproject.common.auth.dto.AuthUser;
+import com.example.jwtproject.common.exception.AuthException;
 import com.example.jwtproject.common.user.enums.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

@@ -1,7 +1,10 @@
 package com.example.jwtproject.global.config;
 
+import com.example.jwtproject.common.exception.AuthException;
 import com.example.jwtproject.global.exception.InvalidRequestStateException;
-import jakarta.security.auth.message.AuthException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,7 +25,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<Map<String, Object>> handleAuthException(AuthException ex) {
-        return getWrappedErrorResponse(HttpStatus.UNAUTHORIZED, "AUTH_ERROR", ex.getMessage());
+        return getWrappedErrorResponse(HttpStatus.UNAUTHORIZED, ex.getErrorCode(), ex.getMessage());
     }
 
     @ExceptionHandler(ServerException.class)

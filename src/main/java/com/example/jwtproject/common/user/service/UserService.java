@@ -29,13 +29,6 @@ public class UserService {
 
         user.getRoles().add(new Role(UserRole.ADMIN, user));
 
-//        boolean alreadyHasRole = user.getRoles().stream()
-//                .anyMatch(role -> role.getUserRole() == newRole);
-//
-//        if(!alreadyHasRole){
-//            user.getRoles().add(new Role(newRole, user));
-//        }
-
         List<RoleResponse> roleResponses = user.getRoles().stream()
                 .map(role -> new RoleResponse(role.getUserRole().name()))
                 .toList();
