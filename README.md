@@ -126,3 +126,53 @@ Spring Boot 기반으로 제작한 JWT 인증 시스템입니다. 회원가입, 
   }
 
 ---
+
+## 📘 사용법
+
+### 1. 서버 주소
+- EC2 서버 URL(GET이 없기 때문에 사용 불가)
+  - http://43.202.200.117:8080
+- Swagger 문서
+  - http://43.202.200.117:8080/swagger-ui/index.html
+
+### 2. 회원가입
+1. Swagger에서 `/signup` 엔드포인트 클릭
+2. `Try it out`을 클릭
+3. `username, password, nickname`을 작성
+   - ex)
+     ```json
+     {
+        "username": "user1",
+        "password": "pass1234",
+        "nickname": "닉네임"
+     }
+4. `Execute` 버튼을 눌러서 실행
+
+### 3. 로그인
+1. Swagger에서 `/login` 엔드포인트 클릭
+2. `Try it out`을 클릭
+3. `username, password`을 작성
+   - ex)
+     ```json
+     {
+        "username": "user1",
+        "password": "pass1234"
+     }
+4. `Execute` 버튼을 눌러서 실행
+
+### 4. 관리자 권한 부여
+1. 먼저 관리자 계정을 로그인
+   - 관리자 계정
+     ```json
+     {
+        "username": "admin",
+        "password": "admin1234"
+     }
+2. 관리자 로그인 후 나타나는 bearer토큰 값을 복사(앞의 `bearer `을 제외한 나머지 부분을 복사
+3. 상단의 `Authorize`버튼 클릭
+4. `Value` 밑 텍스트 박스에 복사한 토큰 값 부여 후 `Authorize`버튼 클릭
+5. Swagger에서 `/admin/users/{userId}/roles` 엔드포인트 클릭
+6. `Try it out`을 클릭
+7. 변경할 userId를 입력(하나만 회원가입을 진행했을 경우 userId는 2이다)
+8. `Execute` 버튼을 눌러서 실행(만약 관리자 계정의 토큰 값이 아닌 경우 에러가 나타난다.)
+---
