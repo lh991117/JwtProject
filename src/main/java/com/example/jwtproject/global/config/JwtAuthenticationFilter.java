@@ -35,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         String uri = httpRequest.getRequestURI();
+
         if (uri.startsWith("/v3/api-docs") || uri.startsWith("/swagger-ui") || uri.startsWith("/swagger-resources")) {
             filterChain.doFilter(httpRequest, httpResponse);
             return;
@@ -42,19 +43,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authorizationHeader = httpRequest.getHeader("Authorization");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String jwt = jwtUtil.substringToken(authorizationHeader);
-            try {
-                Claims claims = jwtUtil.extractClaims(jwt);
+        if (authorizationHeader == null && !authorizationHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(httpRequest, httpResponse);
+            return;
+        }
+        String jwt = jwtUtil.substringToken(authorizationHeader);
+        try {
+            Claims claims = jwtUtil.extractClaims(jwt);
 
-                if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                    setAuthentication(claims);
-                }
-            } catch (SecurityException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-                log.error("JWT 처리 실패", e);
-                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                httpResponse.setContentType("application/json;charset=utf-8");
-                httpResponse.getWriter().write("""
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                setAuthentication(claims);
+            }
+        } catch (SecurityException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            log.error("JWT 처리 실패", e);
+            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpResponse.setContentType("application/json;charset=utf-8");
+            httpResponse.getWriter().write("""
                         {
                           "error": {
                             "code": "INVALID_TOKEN",
@@ -62,8 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                           }
                         }
                         """);
-                return;
-            }
+            return;
         }
         filterChain.doFilter(httpRequest, httpResponse);
     }
