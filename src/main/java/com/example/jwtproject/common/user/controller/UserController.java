@@ -6,6 +6,7 @@ import com.example.jwtproject.common.user.dto.response.UserAdminResponse;
 import com.example.jwtproject.common.user.entity.User;
 import com.example.jwtproject.common.user.enums.UserRole;
 import com.example.jwtproject.common.user.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,6 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @PatchMapping("/admin/users/{userId}/roles")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     public UserAdminResponse addAdminRole(
             @PathVariable Long userId
