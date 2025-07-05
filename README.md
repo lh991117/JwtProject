@@ -6,12 +6,20 @@ Spring Boot 기반으로 제작한 JWT 인증 시스템입니다. 회원가입, 
 
 ---
 
+## 🧰 기술 스택
+
+- Spring Boot 3.5.0
+- Spring Security
+- JWT
+- JaCoCo
+
+---
+
 ## 📂 주요 기능
 
 - 회원가입 (`/signup`)
 - 로그인 (`/login`)
-- 관리자 권한 부여 (`/admin/grant`) - 테스트 용도
-- 사용자 권한 조회 (`/admin/users/{username}`)
+- 관리자 권한 부여 (`/admin/users/{userId}/roles`)
 
 ---
 
@@ -30,6 +38,9 @@ Spring Boot 기반으로 제작한 JWT 인증 시스템입니다. 회원가입, 
     - 회원가입 성공/실패
     - 로그인 성공/실패
     - 권한 부여 로직
+- 측정 결과
+<img width="914" alt="화면 캡처 2025-06-12 122311" src="https://github.com/user-attachments/assets/f33f4bea-be40-458e-859c-83df7d446ce4" />
+
 
 ---
 
@@ -46,3 +57,72 @@ Spring Boot 기반으로 제작한 JWT 인증 시스템입니다. 회원가입, 
     "password": "pass1234",
     "nickname": "닉네임"
   }
+- **Response**: `200 OK`
+  ```json
+  {
+    "username": "user1",
+    "nickname": "닉네임",
+    "roles": [
+        {
+            "role": "USER"
+        }
+    ]
+  }
+- **Response(Error)**: `400`
+  ```json
+  {
+    "error": {
+        "code": "USER_ALREADY_EXISTS",
+        "message": "이미 가입된 사용자입니다."
+    }
+  }
+
+### 2. 로그인
+
+- **URL**: `/login`
+- **Method**: `POST`
+- **Request Body**:
+  ```json
+  {
+    "username": "user1",
+    "password": "pass1234"
+  }
+- **Response**: `200 OK`
+  ```json
+  {
+    "bearerToken": "Bearer ..."
+  }
+- **Response(Error)**: `401`
+  ```json
+  {
+    "error": {
+        "code": "INVALID_CREDENTIALS",
+        "message": "아이디 또는 비밀번호가 올바르지 않습니다."
+    }
+  }
+
+### 3. 관리자 권한 부여
+
+- **URL**: `/admin/users/{userId}/roles`
+- **Method**: `PATCH`
+- **Response**: `200 OK`
+  ```json
+  {
+    "username": "user1",
+    "nickname": "닉네임",
+    "roles": [
+        {
+            "role": "ADMIN"
+        }
+    ]
+  }
+- **Response(Error)**: `403`
+  ```json
+  {
+    "error": {
+        "code": "ACCESS_DENIED",
+        "message": "관리자 권한이 필요한 요청입니다. 접근 권한이 없습니다."
+    }
+  }
+
+---
